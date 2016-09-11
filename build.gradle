@@ -1,0 +1,87 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:1.2.3"
+        classpath "jp.leafytree.gradle:gradle-android-scala-plugin:1.4"
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+apply plugin: "com.android.application"
+apply plugin: "jp.leafytree.android-scala"
+
+android {
+    // Can be built with API Level 16 or higher, while this app retains runtime compatibility from API Level 10. Please refer to targetSdkVersion property
+    compileSdkVersion "android-16"
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 16
+        versionCode 1
+        versionName "1.0"
+    }
+
+    final Console console = System.console();
+    if (console != null) {
+
+        // Building from console
+        signingConfigs {
+            release {
+                // android.signingConfigs.release.
+                println 'Parsing singing config'
+                File propsFile = file("signing.properties");
+                Properties props = new Properties();
+                if (propsFile.exists() && propsFile.canRead())
+                    props.load(new FileInputStream(propsFile))
+
+                if(props.containsKey('STORE_FILE'))
+                    storeFile file(props['STORE_FILE'])
+                else
+                    storeFile console.readLine("\nEnter keystore path: ")
+
+                if(props.containsKey('STORE_PASSWORD'))
+                    storePassword props['STORE_PASSWORD']
+                else
+                    storePassword console.readLine("\nEnter keystore password: ")
+
+                if(props.containsKey('KEY_ALIAS'))
+                    keyAlias props['KEY_ALIAS']
+                else
+                    keyAlias console.readLine("\nEnter keyalias path: ")
+
+                if(props.containsKey('KEY_PASSWORD'))
+                    keyPassword props['KEY_PASSWORD']
+                else
+                    keyPassword console.readLine("\nEnter keyalias password: ")
+
+            }
+        }
+
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+            proguardFile file("proguard-rules.txt")
+        }
+
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFile file("proguard-rules.txt")
+        }
+    }
+}
+
+dependencies {
+    compile "org.scala-lang:scala-library:2.11.8"
+	compile "org.scaloid:scaloid_2.11:4.0"
+}
+

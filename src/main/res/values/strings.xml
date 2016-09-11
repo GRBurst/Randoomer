@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!--<string name="red">Red alert!</string>-->
+	<string name="app_name">Randoomer - Random Number Generator</string>
+    <string name="app_desc">Random number generator. Free and OpenSource.</string>
+</resources>
