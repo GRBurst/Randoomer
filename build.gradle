@@ -22,6 +22,7 @@ android {
     buildToolsVersion "24.0.2"
 
     defaultConfig {
+        applicationId "com.grburst.randoomer"
         minSdkVersion 10
         targetSdkVersion 16
         versionCode 1

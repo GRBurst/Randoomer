@@ -1,7 +1,6 @@
 package com.grburst.randoomer
 
 import org.scaloid.common._
-import scala.util.Random
 import spire.implicits._
 import spire.math._
 import spire.random._
@@ -13,7 +12,6 @@ import android.view.Gravity
 
 class Randoomer extends SActivity {
   onCreate {
-    // val r = scala.util.Random
     val r = rng.Cmwc5()
     def getNumber(min:BigInt, max:BigInt):Option[BigInt] = {
       if(min > max)
