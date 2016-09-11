@@ -1,5 +1,5 @@
 #!/bin/bash -e
-PACK=info.thebleedingedge.randoomer
+PACK=com.grburst.randoomer
 ACT=.Randoomer
 APP=build/outputs/apk/randoomer-debug-unaligned.apk
 BUILD=packageDebug
@@ -17,8 +17,10 @@ fi
 echo "Building project $PACK with $BUILD"
 ./gradlew $BUILD
 
-echo "Installing $APP"
-adb install -r $APP
+if [[ "$BUILD" == "packageDebug" ]]; then
+    echo "Installing $APP"
+    adb install -r $APP
 
-echo "Starting Activity"
-adb shell am start -n $PACK/$ACT
+    echo "Starting Activity"
+    adb shell am start -n $PACK/$ACT
+fi

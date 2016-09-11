@@ -1,7 +1,10 @@
-package info.thebleedingedge.randoomer
+package com.grburst.randoomer
 
 import org.scaloid.common._
 import scala.util.Random
+import spire.implicits._
+import spire.math._
+import spire.random._
 
 import android.graphics.Color
 import android.text.InputType
@@ -10,16 +13,27 @@ import android.view.Gravity
 
 class Randoomer extends SActivity {
   onCreate {
-    val r = scala.util.Random
-    def getNumber(min:Int, max:Int):Int = {
+    // val r = scala.util.Random
+    val r = rng.Cmwc5()
+    def getNumber(min:BigInt, max:BigInt):Option[BigInt] = {
       if(min > max)
-        return 0
+        return None
 
-      min + r.nextInt(1+max-min)
+      val dist = Dist.uniform[BigInt](min, max)
+      Some(r.next[BigInt](dist))
     }
-    lazy val number = new STextView(getNumber(1,6).toString)
+    def generate() = {
+      val bMin = BigInt(rMin.getText.toString)
+      val bMax = BigInt(rMax.getText.toString)
+      getNumber(bMin, bMax) match {
+        case Some(res) => number.text = res.toString
+        case None => number.text = "min > max"
+      }
+    }
+    lazy val number = new STextView()
     lazy val rMin = new SEditText("1") inputType InputType.TYPE_CLASS_NUMBER
     lazy val rMax = new SEditText("6") inputType InputType.TYPE_CLASS_NUMBER
+    generate()
 
     contentView = new SVerticalLayout {
       style {
@@ -36,14 +50,13 @@ class Randoomer extends SActivity {
         rMax.here
       }.here
       STextView("min <= X <= max") textSize 20.dip gravity Gravity.CENTER
-      SButton("Generate").onClick(number.text = getNumber(rMin.getText.toString.toInt, rMax.getText.toString.toInt).toString)
+      SButton("Generate").onClick(generate)
       new SLinearLayout {
         STextView("X = ").wrap textSize 50.dip
         number.here textSize 50.dip
       }.here
 
 
-      STextView("Hint: In the case that max < min, 0 will be returned!")
     } padding 20.dip
   }
 

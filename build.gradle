@@ -28,42 +28,22 @@ android {
         versionName "1.0"
     }
 
-    final Console console = System.console();
-    if (console != null) {
+    signingConfigs {
+        release {
+            File propsFile = file("signing.properties");
+            Properties props = new Properties();
+            if (propsFile.exists() && propsFile.canRead())
+                props.load(new FileInputStream(propsFile))
 
-        // Building from console
-        signingConfigs {
-            release {
-                // android.signingConfigs.release.
-                println 'Parsing singing config'
-                File propsFile = file("signing.properties");
-                Properties props = new Properties();
-                if (propsFile.exists() && propsFile.canRead())
-                    props.load(new FileInputStream(propsFile))
+            if(props.containsKey('STORE_FILE'))
+                android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
 
-                if(props.containsKey('STORE_FILE'))
-                    storeFile file(props['STORE_FILE'])
-                else
-                    storeFile console.readLine("\nEnter keystore path: ")
+            if(props.containsKey('KEY_ALIAS'))
+                android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
 
-                if(props.containsKey('STORE_PASSWORD'))
-                    storePassword props['STORE_PASSWORD']
-                else
-                    storePassword console.readLine("\nEnter keystore password: ")
-
-                if(props.containsKey('KEY_ALIAS'))
-                    keyAlias props['KEY_ALIAS']
-                else
-                    keyAlias console.readLine("\nEnter keyalias path: ")
-
-                if(props.containsKey('KEY_PASSWORD'))
-                    keyPassword props['KEY_PASSWORD']
-                else
-                    keyPassword console.readLine("\nEnter keyalias password: ")
-
-            }
+            storePassword " "
+            keyPassword " "
         }
-
     }
 
     buildTypes {
@@ -82,6 +62,45 @@ android {
 
 dependencies {
     compile "org.scala-lang:scala-library:2.11.8"
-	compile "org.scaloid:scaloid_2.11:4.0"
+    compile "org.scaloid:scaloid_2.11:4.0"
+    compile "org.spire-math:spire_2.11:0.11.0"
 }
 
+task getConfigs << {
+    final Console console = System.console();
+    if (console != null) {
+
+        println 'Parsing singing config'
+        File propsFile = file("signing.properties");
+        Properties props = new Properties();
+        if (propsFile.exists() && propsFile.canRead())
+            props.load(new FileInputStream(propsFile))
+
+        if(props.containsKey('STORE_FILE'))
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        else
+            android.signingConfigs.release.storeFile = new String(console.readLine("\nEnter keystore path: "))
+
+        if(props.containsKey('STORE_PASSWORD'))
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        else
+            android.signingConfigs.release.storePassword = new String(console.readPassword("\nEnter keystore password: "))
+
+        if(props.containsKey('KEY_ALIAS'))
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        else
+            android.signingConfigs.release.keyAlias = new String(console.readLine("\nEnter keyalias path: "))
+
+        if(props.containsKey('KEY_PASSWORD'))
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        else
+            android.signingConfigs.release.keyPassword = new String(console.readPassword("\nEnter keyalias password: "))
+
+    }
+}
+
+tasks.whenTaskAdded { theTask ->
+    if (theTask.name.equals("packageRelease")) {
+        theTask.dependsOn "getConfigs"
+    }
+}
