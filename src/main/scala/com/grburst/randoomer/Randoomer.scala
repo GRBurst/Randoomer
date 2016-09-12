@@ -29,8 +29,8 @@ class Randoomer extends SActivity {
       }
     }
     lazy val number = new STextView()
-    lazy val rMin = new SEditText("1") inputType InputType.TYPE_CLASS_NUMBER
-    lazy val rMax = new SEditText("6") inputType InputType.TYPE_CLASS_NUMBER
+    lazy val rMin = new SEditText("1") inputType InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED
+    lazy val rMax = new SEditText("6") inputType InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED
     generate()
 
     contentView = new SVerticalLayout {
