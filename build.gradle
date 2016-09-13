@@ -64,6 +64,7 @@ android {
 dependencies {
     compile "org.scala-lang:scala-library:2.11.8"
     compile "org.scaloid:scaloid_2.11:4.0"
+    //compile 'org.macroid:macroid_2.11:2.0.0-M4'
     compile "org.spire-math:spire_2.11:0.11.0"
 }
 
