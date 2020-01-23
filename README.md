@@ -1,6 +1,6 @@
 # randoomer
 
-A new Flutter project.
+FOSS Random Number Generator.
 
 ## Getting Started
 
