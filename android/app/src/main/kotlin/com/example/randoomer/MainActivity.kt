@@ -1,4 +1,4 @@
-package com.example.randoomer
+package com.github.grburst.randoomer
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
