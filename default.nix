@@ -15,6 +15,7 @@ in
       flutterPkgs.flutter
       dartPkgs.dart
       android-studio
+      fastlane
       git
     ];
 
